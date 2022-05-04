@@ -1,4 +1,4 @@
-# disableUsers.ps1  
+# disable_inactive_accounts.ps1  
 # Set msDS-LogonTimeSyncInterval (days) to a sane number.  By
 # default lastLogonDate only replicates between DCs every 9-14 
 # days unless this attribute is set to a shorter interval.
@@ -25,7 +25,8 @@ $disableUsers1 = Get-ADUser -SearchBase "OU=Users,OU=Demo Accounts,DC=lab,DC=cle
  
  $disableUsers1 | ForEach-Object {
    Disable-ADAccount $_ -WhatIf
-   Write-EventLog -Source "DisableUsers.ps1" -EventId 9090 -LogName Application -Message "Attempted to disable user $_ because the last login was more than $inactiveDays ago."
+   # Set-ADUser -Description ("Account Auto-Disabled by disable_inactive_accounts.ps1 on $(get-date)")
+   Write-EventLog -Source "disable_inactive_accounts.ps1" -EventId 9090 -LogName Application -Message "Attempted to disable user $_ because the last login was more than $inactiveDays ago."
    }
  
 # Identify and disable users who were created x days ago and never logged in.
@@ -34,5 +35,6 @@ $disableUsers2 = Get-ADUser -SearchBase "OU=Users,OU=Demo Accounts,DC=lab,DC=cle
  
 $disableUsers2 | ForEach-Object {
    Disable-ADAccount $_ -WhatIf
-   Write-EventLog -Source "DisableUsers.ps1" -EventId 9091 -LogName Application -Message "Attempted to disable user $_ because user has never logged in and $neverLoggedInDays days have passed."
+   # Set-ADUser -Description ("Account Auto-Disabled by disable_inactive_accounts.ps1 on $(get-date)"
+   Write-EventLog -Source "disable_inactive_accounts.ps1" -EventId 9091 -LogName Application -Message "Attempted to disable user $_ because user has never logged in and $neverLoggedInDays days have passed."
    }
